@@ -1,0 +1,28 @@
+Language: Cpp
+BasedOnStyle: LLVM
+AccessModifierOffset: -4
+AlignAfterOpenBracket: BlockIndent
+AlignTrailingComments: Never
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+BinPackArguments: false
+BinPackParameters: false
+BreakConstructorInitializers: BeforeComma
+BreakInheritanceList: BeforeComma
+BreakTemplateDeclarations: Yes
+ColumnLimit: 120
+EmptyLineBeforeAccessModifier: Always
+IncludeBlocks: Regroup
+IndentWidth: 4
+KeepEmptyLines:
+  AtStartOfBlock: false
+  AtStartOfFile: false
+PackConstructorInitializers: CurrentLine
+SpaceAfterCStyleCast: true
+SpaceBeforeCpp11BracedList: true
+TabWidth: 4
+PenaltyExcessCharacter: 5
+PenaltyBreakComment: 300
+PenaltyBreakString: 1000

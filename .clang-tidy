@@ -1,0 +1,50 @@
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  performance-*,
+  portability-*,
+  misc-*,
+  -misc-non-private-member-variables-in-classes,
+  -misc-use-anonymous-namespace,
+  -misc-include-cleaner,
+  -misc-const-correctness,
+  readability-*,
+  -readability-braces-around-statements,
+  -readability-magic-numbers,
+  -readability-identifier-length,
+  -readability-math-missing-parentheses,
+  -readability-uppercase-literal-suffix,
+  -readability-redundant-member-init,
+  google-*,
+  -google-readability-namespace-comments,
+  -google-readability-braces-around-statements,
+  -google-runtime-references,
+
+CheckOptions:
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case
+  - key: readability-identifier-naming.MemberCase
+    value: lower_case
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case
+  - key: readability-identifier-naming.UnionCase
+    value: CamelCase
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+  - key: readability-identifier-naming.IgnoreMainLikeFunctions
+    value: true
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: _
+
+  - key: readability-redundant-member-init.IgnoreBaseInCopyConstructors
+    value: true
+
+  - key: readability-function-cognitive-complexity.IgnoreMacros
+    value: true
