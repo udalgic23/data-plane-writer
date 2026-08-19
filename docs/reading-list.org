@@ -1,0 +1,21 @@
+#+title: Reading List
+
+- https://muratkarslioglu.com/blog/io-uring-spdk-kernel-bypass/
+- https://muratkarslioglu.com/blog/nvme-of-promise-and-pain/
+- https://stackoverflow.com/questions/13407542/is-there-really-no-asynchronous-block-i-o-on-linux
+
+Benchmarks:
+- https://review.spdk.io/download/performance-reports/SPDK_tcp_mlx_perf_report_2405.pdf
+- https://review.spdk.io/download/performance-reports/SPDK_rdma_mlx_perf_report_2405.pdf
+- https://review.spdk.io/download/performance-reports/SPDK_nvme_bdev_perf_report_2405.pdf
+
+Implementation:
+- https://spdk.io/doc/nvme_8h.html
+  - https://github.com/spdk/spdk/commit/dfb60590c9f869d5911018ff948a53657a9f2f2c#diff-0bacc571f6a7979851a04d75ca73c47ca7da27e766ccebda801f1dd6e2af061d
+
+Tuning:
+- https://harryvasanth.com/posts/linux-nvme-tuning-io_uring/
+- https://github.com/openebs/mayastor
+
+Misc:
+- https://spdk.io/news/2024/02/12/raid5f/
