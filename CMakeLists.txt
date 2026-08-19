@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 
 project(
-    "Template"
+    "Data Plane Writer"
     DESCRIPTION ""
     VERSION 0.0.1
     LANGUAGES CXX
@@ -15,15 +15,15 @@ if (PROJECT_IS_TOP_LEVEL)
   set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif()
 
-option(template_BUILD_EXAMPLES "Build Template examples" OFF)
+option(dpw_BUILD_EXAMPLES "Build Data Plane Writer examples" OFF)
 
-if(template_BUILD_EXAMPLES)
+if(dpw_BUILD_EXAMPLES)
   add_subdirectory(examples)
 endif()
 
-add_library(template INTERFACE)
+add_library(dpw INTERFACE)
 
-target_include_directories(template INTERFACE
+target_include_directories(dpw INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
@@ -36,18 +36,18 @@ target_include_directories(template INTERFACE
 
 # Debugging options
 
-option(template_ENABLE_SANITIZERS "Enable ASan/UBSan" OFF)
+option(dpw_ENABLE_SANITIZERS "Enable ASan/UBSan" OFF)
 
-if (template_ENABLE_SANITIZERS)
+if (dpw_ENABLE_SANITIZERS)
     target_compile_options(
-        template
+        dpw
         PRIVATE
         -fsanitize=address,undefined
         -fno-omit-frame-pointer
         -g
     )
     target_link_options(
-        template
+        dpw
         PRIVATE
         -fsanitize=address,undefined
     )
