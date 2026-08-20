@@ -28,7 +28,7 @@ public:
     }
 
 private:
-    std::array<T, Capacity> buf;
+    std::array<T, Capacity> buf_;
     alignas(64) std::atomic<size_t> head_ {0};
     alignas(64) std::atomic<size_t> tail_ {0};
 };
