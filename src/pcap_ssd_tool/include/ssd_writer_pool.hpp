@@ -32,4 +32,6 @@ private:
     std::atomic<bool> any_error_ {false};
     int fd_ = -1;
     size_t next_writer_ = 0;
+    bool joined_ = false;
+    bool closed_ = false;
 };
