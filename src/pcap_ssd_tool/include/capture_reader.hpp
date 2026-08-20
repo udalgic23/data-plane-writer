@@ -1,21 +1,21 @@
 #pragma once
 
+#include <optional>
 #include <pcap.h>
 #include <string>
-#include <optional>
 
 struct PcapView {
-    const struct pcap_pkthdr* hdr;
-    const u_char* data;
+    const struct pcap_pkthdr *hdr;
+    const u_char *data;
 };
 
 class CaptureReader {
 public:
-    explicit CaptureReader(const std::string& pcap_path);
+    explicit CaptureReader(const std::string &pcap_path);
     ~CaptureReader();
 
     std::optional<PcapView> next();
 
 private:
-    pcap_t* pcap_ = nullptr;
+    pcap_t *pcap_ = nullptr;
 };
