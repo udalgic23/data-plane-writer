@@ -36,3 +36,11 @@ std::optional<PcapView> CaptureReader::next() {
         throw std::runtime_error(std::string("pcap_next_ex error: ") + pcap_geterr(pcap_));
     }
 }
+
+uint32_t CaptureReader::snaplen() const {
+    return static_cast<uint32_t>(pcap_snapshot(pcap_));
+}
+
+uint32_t CaptureReader::linktype() const {
+    return static_cast<uint32_t>(pcap_datalink(pcap_));
+}

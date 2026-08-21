@@ -16,6 +16,9 @@ public:
 
     std::optional<PcapView> next();
 
+    uint32_t snaplen() const;
+    uint32_t linktype() const;
+
 private:
     pcap_t *pcap_ = nullptr;
 };

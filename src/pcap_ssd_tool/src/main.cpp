@@ -23,6 +23,42 @@ static std::string digest_to_hex(const Digest& d) {
     return out;
 }
 
+static void append_u32(std::vector<uint8_t>& buf, uint32_t v) {
+    const auto* p = reinterpret_cast<const uint8_t*>(&v);
+    buf.insert(buf.end(), p, p + sizeof(v));
+}
+static void append_u16(std::vector<uint8_t>& buf, uint16_t v) {
+    const auto* p = reinterpret_cast<const uint8_t*>(&v);
+    buf.insert(buf.end(), p, p + sizeof(v));
+}
+static void append_i32(std::vector<uint8_t>& buf, int32_t v) {
+    const auto* p = reinterpret_cast<const uint8_t*>(&v);
+    buf.insert(buf.end(), p, p + sizeof(v));
+}
+
+static std::vector<uint8_t> make_global_header(uint32_t snaplen, uint32_t linktype) {
+    std::vector<uint8_t> buf;
+    buf.reserve(24);
+    append_u32(buf, 0xa1b2c3d4u); // magic (microsecond-resolution timestamps)
+    append_u16(buf, 2);           // version_major
+    append_u16(buf, 4);           // version_minor
+    append_i32(buf, 0);           // thiszone (GMT offset, always 0 in practice)
+    append_u32(buf, 0);           // sigfigs  (accuracy of timestamps, always 0)
+    append_u32(buf, snaplen);
+    append_u32(buf, linktype);
+    return buf;
+}
+
+static std::vector<uint8_t> make_packet_header(const struct pcap_pkthdr* hdr) {
+    std::vector<uint8_t> buf;
+    buf.reserve(16);
+    append_u32(buf, static_cast<uint32_t>(hdr->ts.tv_sec));
+    append_u32(buf, static_cast<uint32_t>(hdr->ts.tv_usec));
+    append_u32(buf, hdr->caplen);
+    append_u32(buf, hdr->len);
+    return buf;
+}
+
 static Digest hash_whole_file(const std::string& path) {
     std::ifstream f(path, std::ios::binary | std::ios::ate);
     if (!f) throw std::runtime_error("failed to open " + path);
@@ -73,16 +109,38 @@ int main(int argc, char** argv) {
         off_t running_offset = 0;
         uint64_t req_id = 0;
 
+        {
+            std::vector<uint8_t> ghdr = make_global_header(capture.snaplen(), capture.linktype());
+            if (EVP_DigestUpdate(ctx_a, ghdr.data(), ghdr.size()) != 1) {
+                throw std::runtime_error("hash update failed (global header)");
+            }
+
+            PacketTask task;
+            task.req_id = req_id++;
+            task.offset = running_offset;
+            running_offset += static_cast<off_t>(ghdr.size());
+            task.data = std::move(ghdr);
+
+            pool.dispatch(std::move(task));
+        }
+
         while (auto pkt = capture.next()) {
-            if (EVP_DigestUpdate(ctx_a, pkt->data, pkt->hdr->caplen) != 1) {
+            std::vector<uint8_t> phdr = make_packet_header(pkt->hdr);
+
+            if (EVP_DigestUpdate(ctx_a, phdr.data(), phdr.size()) != 1 ||
+                EVP_DigestUpdate(ctx_a, pkt->data, pkt->hdr->caplen) != 1) {
                 throw std::runtime_error("hash update failed");
             }
 
             PacketTask task;
             task.req_id = req_id++;
             task.offset = running_offset;
-            task.data.assign(pkt->data, pkt->data + pkt->hdr->caplen);
-            running_offset += static_cast<off_t>(pkt->hdr->caplen);
+
+            task.data.reserve(phdr.size() + pkt->hdr->caplen);
+            task.data.insert(task.data.end(), phdr.begin(), phdr.end());
+            task.data.insert(task.data.end(), pkt->data, pkt->data + pkt->hdr->caplen);
+
+            running_offset += static_cast<off_t>(task.data.size());
 
             pool.dispatch(std::move(task));
         }
