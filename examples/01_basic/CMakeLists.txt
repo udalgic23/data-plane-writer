@@ -5,4 +5,4 @@ add_executable(
     "main.cpp"
 )
 
-target_link_libraries("${PROJECT_NAME}" PRIVATE template)
+target_link_libraries("${PROJECT_NAME}" PRIVATE dpw)
