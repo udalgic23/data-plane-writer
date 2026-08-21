@@ -1,5 +1,5 @@
 #include <print>
 
-auto hello() -> void {
+inline auto hello() -> void {
     std::println("Hello!");
 }
