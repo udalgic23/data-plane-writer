@@ -27,8 +27,8 @@ jobs:
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-            -Dtemplate_BUILD_EXAMPLES=ON
-            # -Dtemplate_ENABLE_TESTS=ON
+            -Ddpw_BUILD_EXAMPLES=ON
+            # -Ddpw_ENABLE_TESTS=ON
 
       - name: Check clang-tidy
         env:
