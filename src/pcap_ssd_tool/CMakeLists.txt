@@ -25,6 +25,9 @@ target_link_libraries(pcap_ssd_core PUBLIC ${PCAP_LIBRARY} OpenSSL::Crypto Threa
 add_executable(pcap_ssd_tool src/main.cpp)
 target_link_libraries(pcap_ssd_tool PRIVATE pcap_ssd_core)
 
+add_executable(bench_ssd_writer bench/bench_ssd_writer.cpp)
+target_link_libraries(bench_ssd_writer PRIVATE pcap_ssd_core)
+
 enable_testing()
 # add_subdirectory(tests)
 

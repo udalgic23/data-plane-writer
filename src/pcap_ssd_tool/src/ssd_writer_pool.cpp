@@ -7,7 +7,8 @@
 #include <thread>
 #include <unistd.h>
 
-SsdWriterPool::SsdWriterPool(const std::string &path, size_t num_writers) {
+SsdWriterPool::SsdWriterPool(const std::string &path, size_t num_writers, CompletionCallback on_complete)
+    : on_complete_(std::move(on_complete)) {
     if (num_writers == 0)
         throw std::invalid_argument("num_writers must be >= 1");
 
@@ -34,6 +35,12 @@ SsdWriterPool::~SsdWriterPool() {
         close(fd_);
         fd_ = -1;
     }
+}
+
+bool SsdWriterPool::preallocate(off_t size) {
+    if (fd_ < 0)
+        return false;
+    return posix_fallocate(fd_, 0, size) == 0;
 }
 
 void SsdWriterPool::dispatch(PacketTask &&task) {
@@ -90,8 +97,12 @@ void SsdWriterPool::writer_loop(Writer &w) {
 
     auto do_write = [this](const PacketTask &t) {
         ssize_t n = pwrite(fd_, t.data.data(), t.data.size(), t.offset);
-        if (n < 0 || static_cast<size_t>(n) != t.data.size()) {
+        bool ok = (n >= 0 && static_cast<size_t>(n) == t.data.size());
+        if (!ok) {
             any_error_.store(true, std::memory_order_relaxed);
+        }
+        if (on_complete_) {
+            on_complete_(t.req_id, ok);
         }
     };
 
